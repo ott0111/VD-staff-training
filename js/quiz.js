@@ -71,10 +71,20 @@ finishQuiz()
 
 }
 
-function finishQuiz(){
+async function finishQuiz(){
 
 localStorage.setItem("voidScore",score)
 localStorage.setItem("voidUser",username)
+
+await supabaseClient
+.from("quiz_results")
+.insert([
+{
+username: username,
+score: score,
+total: questions.length
+}
+])
 
 window.location.href = "success.html"
 
