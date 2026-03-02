@@ -1,27 +1,38 @@
 const table = document.getElementById("applicationsTable")
 
-let user = localStorage.getItem("voidUser")
-let score = localStorage.getItem("voidScore")
+async function loadApplications(){
 
-if(user){
+const { data, error } = await supabaseClient
+.from("quiz_results")
+.select("*")
+.order("created_at",{ascending:false})
 
-let status = score >= 20 ? "PASS" : "FAIL"
+if(error){
+console.error(error)
+return
+}
+
+table.innerHTML = ""
+
+data.forEach(app => {
+
+let status = app.score >= 20 ? "PASS" : "FAIL"
 
 let row = document.createElement("tr")
 
 row.innerHTML = `
 
-<td>${user}</td>
+<td>${app.username}</td>
 
-<td>${score} / 30</td>
+<td>${app.score} / ${app.total}</td>
 
-<td class="${score >= 20 ? "pass" : "fail"}">${status}</td>
+<td class="${app.score >= 20 ? "pass" : "fail"}">${status}</td>
 
 <td>
 
-<button class="accept-btn">Accept</button>
+<button class="accept-btn" onclick="acceptUser('${app.id}')">Accept</button>
 
-<button class="deny-btn">Deny</button>
+<button class="deny-btn" onclick="denyUser('${app.id}')">Deny</button>
 
 </td>
 
@@ -29,4 +40,30 @@ row.innerHTML = `
 
 table.appendChild(row)
 
+})
+
 }
+
+async function acceptUser(id){
+
+await supabaseClient
+.from("quiz_results")
+.update({status:"accepted"})
+.eq("id",id)
+
+loadApplications()
+
+}
+
+async function denyUser(id){
+
+await supabaseClient
+.from("quiz_results")
+.update({status:"denied"})
+.eq("id",id)
+
+loadApplications()
+
+}
+
+loadApplications()
