@@ -1,1 +1,42 @@
+<!DOCTYPE html>
 
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<title>Assessment Complete</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<div class="background-glow"></div>
+
+<div class="hero">
+
+<h1>Assessment Complete</h1>
+
+<p id="scoreText"></p>
+
+<button class="start-btn" onclick="location.href='index.html'">
+Return Home
+</button>
+
+</div>
+
+<script>
+
+let score = localStorage.getItem("voidScore")
+let user = localStorage.getItem("voidUser")
+
+document.getElementById("scoreText").innerText =
+user + " scored " + score + " / 30"
+
+</script>
+
+</body>
+
+</html>
